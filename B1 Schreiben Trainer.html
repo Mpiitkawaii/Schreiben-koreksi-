@@ -1,0 +1,327 @@
+<!-- ... existing code ... -->
+                <!-- Navigation Tabs -->
+                <div class="bg-slate-800 border-t border-slate-700/50 px-4 sm:px-6">
+                    <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto text-sm font-medium py-2 custom-scrollbar">
+                        <button onclick="switchTab('drills')" id="tab-btn-drills" class="tab-btn active px-4 py-2 rounded-lg flex items-center space-x-2 transition-all bg-emerald-600 text-white shadow">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <span>1. Grammatik Drills</span>
+                        </button>
+                        <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700">
+                            <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                            <span>2. Simulasi Ujian & AI</span>
+                        </button>
+                        <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>3. Self-Checklist B1</span>
+                        </button>
+                        <button onclick="switchTab('redemittel')" id="tab-btn-redemittel" class="tab-btn px-4 py-2 rounded-lg flex items-center space-x-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                            <span>4. Redemittel Bank</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+<!-- ... existing code ... -->
+
+        <!-- ================= TAB 2: SCHREIBEN SIMULATOR ================= -->
+        <section id="tab-simulator" class="tab-content hidden space-y-6">
+            
+            <!-- Exam Mode Control Bar -->
+            <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-lg border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-500/20 text-amber-400 p-3 rounded-xl border border-amber-500/30">
+                        <i class="fa-solid fa-stopwatch text-2xl animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base sm:text-lg text-white">Mode Simulasi Ujian B1</h3>
+                        <p class="text-xs text-slate-400">Kerjakan sesuai batas waktu ujian resmi Goethe B1</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700">
+                    <div class="text-right">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">Sisa Waktu</span>
+                        <span id="exam-timer-display" class="font-mono text-2xl font-bold text-amber-400">20:00</span>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button onclick="toggleExamTimer()" id="btn-timer-toggle" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+                            <i id="timer-toggle-icon" class="fa-solid fa-play"></i> <span id="timer-toggle-text">Mulai</span>
+                        </button>
+                        <button onclick="resetExamTimer()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 p-1.5 rounded-lg text-xs transition" title="Reset Timer">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Column: Task Prompt & Editor -->
+                <div class="lg:col-span-7 space-y-4">
+                    <!-- Task Selector -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <label class="block text-xs font-bold uppercase text-slate-500">Pilih Bagian Ujian B1:</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="selectTaskType('teil1')" id="task-btn-teil1" class="task-type-btn border-2 border-emerald-600 bg-emerald-50 text-emerald-900 font-semibold py-2 px-3 text-xs rounded-xl transition text-center">
+                                Teil 1: Informell (20 mnt)
+                            </button>
+                            <button onclick="selectTaskType('teil2')" id="task-btn-teil2" class="task-type-btn border-2 border-slate-200 bg-white text-slate-700 font-semibold py-2 px-3 text-xs rounded-xl transition text-center">
+                                Teil 2: Meinung (20 mnt)
+                            </button>
+                            <button onclick="selectTaskType('teil3')" id="task-btn-teil3" class="task-type-btn border-2 border-slate-200 bg-white text-slate-700 font-semibold py-2 px-3 text-xs rounded-xl transition text-center">
+                                Teil 3: Formell (10 mnt)
+                            </button>
+                        </div>
+
+                        <!-- Interactive Prompt Card with Leitpunkte Checkbox -->
+                        <div class="bg-amber-50/80 border border-amber-200 p-4 rounded-xl text-slate-800 text-sm space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span id="prompt-badge" class="bg-amber-200 text-amber-900 font-bold text-xs px-2 py-0.5 rounded">Teil 1 - E-Mail an einen Freund</span>
+                                <span class="text-xs text-slate-500 font-medium"><i class="fa-solid fa-clock mr-1"></i> Target: ~80 Wörter</span>
+                            </div>
+                            <h4 id="prompt-title" class="font-bold text-amber-950 text-base">Lernen im Online-Kurs oder in der Klasse</h4>
+                            <p id="prompt-description" class="text-xs text-slate-700 leading-relaxed">
+                                Sie haben vor Kurzem gelernt oder gearbeitet. Schreiben Sie Ihrem Freund/Ihrer Freundin Killua.
+                            </p>
+
+                            <!-- Interactive Leitpunkte Checkers -->
+                            <div class="bg-white/80 p-3 rounded-lg border border-amber-200/60 space-y-2">
+                                <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wide block border-b border-amber-200/50 pb-1">
+                                    <i class="fa-solid fa-list-check text-amber-600 mr-1"></i> Checklist Poin Tugas (Leitpunkte):
+                                </span>
+                                <div id="leitpunkte-list" class="space-y-1.5 text-xs text-slate-700">
+                                    <!-- Populated dynamically in JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Writing Editor with Quick Redemittel Toolbar -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-bold uppercase text-slate-500 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-pen text-emerald-600"></i> Lembar Jawaban Kamu:
+                            </label>
+                            <div class="text-xs text-slate-500 font-mono">
+                                Total Kata: <span id="word-count" class="font-bold text-slate-800">0</span>
+                            </div>
+                        </div>
+
+                        <!-- One-Click Redemittel Quick Chips -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block"><i class="fa-solid fa-bolt text-amber-500"></i> Sisipkan Redemittel Cepat:</span>
+                            <div id="redemittel-chips" class="flex flex-wrap gap-1.5 text-xs overflow-x-auto pb-1 custom-scrollbar">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <textarea id="writing-input" oninput="analyzeWritingRealtime()" rows="12" class="w-full p-4 border border-slate-200 rounded-xl font-sans text-sm sm:text-base text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none leading-relaxed transition resize-y" placeholder="Lieber Killua,
+
+wie geht es dir? Ich hoffe, dass du gesund bist..."></textarea>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                            <button onclick="insertSampleText()" class="text-xs text-slate-500 hover:text-slate-800 underline flex items-center gap-1">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Muat Draf Contoh
+                            </button>
+                            <div class="flex space-x-2">
+                                <button onclick="triggerGeminiAiCorrection()" id="btn-ai-correct" class="bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-semibold px-5 py-2.5 rounded-xl transition shadow flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-robot"></i>
+                                    <span>Analisis Ujian (Gemini AI)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Analyzer & AI Correction Result -->
+                <div class="lg:col-span-5 space-y-4">
+                    <!-- Realtime Check Warnings Card -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <i class="fa-solid fa-microscope text-emerald-600"></i> Auto-Deteksi Kesalahan Tata Bahasa
+                        </h3>
+
+                        <!-- Rule Checks List -->
+                        <div class="space-y-2 text-xs">
+                            <!-- Rule 1: Nebensatz Verb Check -->
+                            <div id="check-item-nebensatz" class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                                <div id="check-icon-nebensatz" class="text-slate-400 mt-0.5"><i class="fa-solid fa-circle-minus"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-800">Posisi Verb di Nebensatz (`weil`, `dass`, `wenn`)</h4>
+                                    <p id="check-desc-nebensatz" class="text-slate-500 text-[11px] mt-0.5">Menunggu input tulisan...</p>
+                                </div>
+                            </div>
+
+                            <!-- Rule 2: Word Count Check -->
+                            <div id="check-item-length" class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                                <div id="check-icon-length" class="text-slate-400 mt-0.5"><i class="fa-solid fa-circle-minus"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-800">Jumlah Kata Minimum</h4>
+                                    <p id="check-desc-length" class="text-slate-500 text-[11px] mt-0.5">Teil 1 minimal ~80 kata.</p>
+                                </div>
+                            </div>
+
+                            <!-- Rule 3: Anrede & Grußformel Check -->
+                            <div id="check-item-greeting" class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                                <div id="check-icon-greeting" class="text-slate-400 mt-0.5"><i class="fa-solid fa-circle-minus"></i></div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-slate-800">Salam Pembuka & Penutup</h4>
+                                    <p id="check-desc-greeting" class="text-slate-500 text-[11px] mt-0.5">Format email/surat formal atau informal.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Feedback Box (Populated after Gemini Call) -->
+                    <div id="ai-feedback-container" class="hidden bg-white p-5 rounded-2xl border border-emerald-200 shadow-md space-y-4">
+                        <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
+                            <h3 class="font-bold text-emerald-950 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-award text-amber-500"></i> Hasil Evaluasi Ujian AI B1
+                            </h3>
+                            <span id="ai-score-badge" class="bg-emerald-100 text-emerald-800 font-bold text-xs px-2.5 py-1 rounded-md">Punkte: -- / 100</span>
+                        </div>
+
+                        <div id="ai-loading" class="hidden py-8 text-center space-y-3">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-emerald-500 border-t-transparent"></div>
+                            <p class="text-xs font-semibold text-slate-600">Gemini sedang membedah tulisan B1 berdasarkan Rubrik Ujian Resmi Goethe...</p>
+                        </div>
+
+                        <div id="ai-result-content" class="space-y-3 text-xs leading-relaxed text-slate-700 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<!-- ... existing code ... -->
+
+    <script>
+        let state = {
+            xp: 0,
+            activeTab: 'drills',
+            drillCategory: 'nebensatz',
+            drillIndex: 0,
+            selectedTask: 'teil1',
+            userText: '',
+            timer: {
+                interval: null,
+                secondsLeft: 1200, // 20 mins default
+                isRunning: false
+            },
+            leitpunkteChecked: [false, false, false]
+        };
+
+        // Drill Questions Data
+<!-- ... existing code ... -->
+        // Tasks Prompts Data
+        const taskPrompts = {
+            teil1: {
+                badge: 'Teil 1 - Informelle E-Mail (~80 Wörter)',
+                title: 'Lernen im Online-Kurs oder in der Klasse',
+                desc: 'Sie haben vor Kurzem gelernt oder gearbeitet. Schreiben Sie Ihrem Freund/Ihrer Freundin Killua:',
+                timeLimit: 1200, // 20 mins
+                leitpunkte: [
+                    'Wie läuft das Lernen / die Arbeit?',
+                    'Ist man flexibel? (Warum war es schön?)',
+                    'Vorschlag machen für ein Treffen im Café.'
+                ],
+                chips: [
+                    'Lieber Killua,',
+                    'wie geht es dir?',
+                    'Ich hoffe, dass du gesund bist.',
+                    '..., weil man flexibel sein konnte.',
+                    '..., dass du Zeit hast.',
+                    'Wir könnten uns im Café treffen.',
+                    'Viele Grüße'
+                ],
+                sample: `Lieber Killua,
+
+wie geht es dir? Ich hoffe, dass du gesund bist. Ich habe online Deutsch gelernt. Am Anfang lernte ich Deutsch mit meinem Online-Tutor. Es war schön, weil man flexibel sein konnte. Man sollte nicht häufig in der Klasse lernen.
+
+Hast du Freizeit? Wir könnten uns im Café treffen. Dort möchte ich dir die Fotos zeigen, die mich durch Zoom lernen macht.
+
+Bitte beantworte meine E-Mail!
+
+Viele Grüße
+Fitri`
+            },
+            teil2: {
+                badge: 'Teil 2 - Meinungsäußerung (~80 Wörter)',
+                title: 'Homeoffice und Arbeitszeit',
+                desc: 'Schreiben Sie Ihre Meinung zum Thema "Homeoffice / Flexible Arbeitszeiten":',
+                timeLimit: 1200, // 20 mins
+                leitpunkte: [
+                    'Stimmen Sie zu oder nicht?',
+                    'Warum ist die Balance zwischen Büro und Freizeit wichtig?',
+                    'Vor- dan Nachteile nennen.'
+                ],
+                chips: [
+                    'Ich stimme ... zu, weil',
+                    'Ich bin der Meinung, dass',
+                    'Das ist sehr wichtig, weil',
+                    'Man arbeitet nicht nur ..., sondern auch ...',
+                    'Aus diesen Gründen denk ich, dass'
+                ],
+                sample: `Ich stimme Jessica zu, weil es sehr wichtig ist, dass man eine gute Balance zwischen Büro und Freizeit hat. 
+
+Man arbeitet nicht nur im Büro, sondern auch zu Hause. So kann man pünktlich das Büro verlassen und hat weniger Stress. Außerdem kann man mehr Zeit mit der Familie verbringt.
+
+Aus diesen Gründen ist flexibles Arbeiten meiner Meinung nach sehr gut.`
+            },
+            teil3: {
+                badge: 'Teil 3 - Formelle E-Mail (~40 Wörter)',
+                title: 'Absage / Termin verschieben an Herr Weber',
+                desc: 'Schreiben Sie an Ihren Kursleiter Herr Weber:',
+                timeLimit: 600, // 10 mins
+                leitpunkte: [
+                    'Entschuldigen Sie sich, dass Sie nicht kommen können.',
+                    'Grund nennen (Arbeit / Reise des Mannes).',
+                    'Um Verständnis bitten.'
+                ],
+                chips: [
+                    'Sehr geehrter Herr Weber,',
+                    'Ich entschuldige mich bei Ihnen, dass',
+                    'Der Grund dafür ist, dass',
+                    'Ich hoffe, dass Sie meine Entschuldigung verstehen.',
+                    'Mit freundlichen Grüßen'
+                ],
+                sample: `Sehr geehrter Herr Weber,
+
+ich entschuldige mich bei Ihnen, dass ich nicht zum Kurs kommen kann. Der Grund dafür ist, dass mein Mann beruflich nach Japan fliegen muss, weil er dort einen Monat Arbeit hat.
+
+Ich hoffe, dass Sie meine Entschuldigung verstehen.
+
+Mit freundlichen Grüßen
+Fitri Ilhami`
+            }
+        };
+
+        // Timer functions
+        function toggleExamTimer() {
+            if (state.timer.isRunning) {
+                pauseExamTimer();
+            } else {
+                startExamTimer();
+            }
+        }
+
+        function startExamTimer() {
+            if (state.timer.isRunning) return;
+            state.timer.isRunning = true;
+            
+            document.getElementById('btn-timer-toggle').className = 'bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1';
+            document.getElementById('timer-toggle-icon').className = 'fa-solid fa-pause';
+            document.getElementById('timer-toggle-text').innerText = 'Jeda';
+
+            state.timer.interval = setInterval(() => {
+                if (state.timer.secondsLeft > 0) {
+                    state.timer.secondsLeft--;
+                    updateTimerDisplay();
+                } else {
+                    pauseExamTimer();
+                    showToast('Waktu Ujian Habis!', 'Waktu simulasi ujian telah berakhir. Kumpulkan tulisanmu untuk dianalisis AI!', 'warning');
+                }
+            }, 1000);
+        }
+
+        
